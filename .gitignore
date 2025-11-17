@@ -1,0 +1,67 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Node
+node_modules/
+npm-packages-offline-cache/
+
+# Env
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Next.js
+.next/
+out/
+.next/cache/
+.vercel/
+dist/
+
+# Typescript
+*.tsbuildinfo
+
+# Build output
+build/
+coverage/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Mac / Linux / Windows trash
+.trash/
+.swp
+.swo
+
+# Local dev data (if any)
+*.sqlite
+tmp/
+temp/
+
+# Turborepo (if used)
+turbo/
+.turbo/
+
+# Prisma (if used)
+prisma/*.db
+prisma/*.db-journal
+
+# Bun
+.bun/
+
+# Runtime files
+.pnpm-store/
