@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { LayoutDashboard, Users, Wallet, Send, DollarSign, FileText, LogOut, Menu, X } from 'lucide-react';
+import { logout } from "@/lib/auth/logout";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -79,11 +80,15 @@ export function DashboardLayout({
           <Button
             variant="ghost"
             className="w-full justify-start gap-3 text-primary-foreground hover:bg-white/10"
-            onClick={() => (window.location.href = '/login')}
+            onClick={() => {
+              logout();               // ⬅ limpia token y datos del usuario
+              window.location.href = '/login'; // redirige
+            }}
           >
             <LogOut className="w-4 h-4" />
             Cerrar sesión
           </Button>
+
         </div>
       </aside>
 
