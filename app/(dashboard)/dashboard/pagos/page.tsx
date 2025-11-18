@@ -28,7 +28,12 @@ export default function PagosPage() {
     try {
       setLoading(true);
       setError(null);
-      const [cu, p] = await Promise.all([listarCuentas(), listarPagos()]);
+
+      const [cu, p] = await Promise.all([
+        listarCuentas(),
+        listarPagos(cuentas.length > 0 ? cuentas[0].id : undefined)
+      ]);
+
       setCuentas(cu.filter(c => c.estado === 'Activa'));
       setPagos(p);
     } catch (err) {
