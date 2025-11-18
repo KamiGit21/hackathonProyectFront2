@@ -76,7 +76,7 @@ export default function PagosPage() {
       const nuevoPago = await realizarPagoServicio({
         cuentaId,
         tipoServicio: servicio as any,
-        codigoSuministro: codigo,
+        referencia: codigo,
         monto,
         estado: 'Exitoso',
         fecha: new Date().toISOString().split('T')[0],
