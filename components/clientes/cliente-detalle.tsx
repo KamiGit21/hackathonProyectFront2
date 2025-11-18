@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Cliente } from '@/lib/types';
-import { X } from 'lucide-react';
 
 interface ClienteDetalleProps {
   cliente: Cliente | null;
@@ -18,6 +17,8 @@ export function ClienteDetalle({
   onClose,
 }: ClienteDetalleProps) {
   if (!cliente) return null;
+
+  const estadoLabel = cliente.estado === 'ACTIVO' ? 'Activo' : 'Inactivo';
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -38,12 +39,12 @@ export function ClienteDetalle({
             <Badge
               variant="default"
               className={
-                cliente.estado === 'Activo'
+                cliente.estado === 'ACTIVO'
                   ? 'bg-green-100 text-green-800'
                   : 'bg-gray-100 text-gray-800'
               }
             >
-              {cliente.estado}
+              {estadoLabel}
             </Badge>
           </div>
 
@@ -51,7 +52,7 @@ export function ClienteDetalle({
           <div className="grid grid-cols-2 gap-6">
             <div>
               <p className="text-sm text-muted-foreground mb-1">CI/NIT</p>
-              <p className="font-semibold">{cliente.ci}</p>
+              <p className="font-semibold">{cliente.ci_nit}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground mb-1">Teléfono</p>
@@ -61,11 +62,11 @@ export function ClienteDetalle({
               <p className="text-sm text-muted-foreground mb-1">
                 Fecha de Nacimiento
               </p>
-              <p className="font-semibold">{cliente.fechaNacimiento}</p>
+              <p className="font-semibold">{cliente.fecha_nacimiento}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground mb-1">Fecha de Alta</p>
-              <p className="font-semibold">{cliente.fechaAlta}</p>
+              <p className="font-semibold">{cliente.fecha_alta}</p>
             </div>
             <div className="col-span-2">
               <p className="text-sm text-muted-foreground mb-1">Dirección</p>

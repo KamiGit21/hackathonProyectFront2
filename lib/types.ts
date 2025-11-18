@@ -3,14 +3,14 @@
 export interface Cliente {
   id: string;
   nombre: string;
-  apellidos: string;
-  ci: string; // CI/NIT
+  apellidos?: string;
+  ci_nit?: string;
   email: string;
-  telefono: string;
-  fechaNacimiento: string;
-  direccion: string;
-  estado: 'Activo' | 'Inactivo';
-  fechaAlta: string;
+  telefono?: string;
+  fecha_nacimiento?: string; // "YYYY-MM-DD"
+  direccion?: string;
+  estado: 'ACTIVO' | 'INACTIVO';
+  fecha_alta?: string;       // "YYYY-MM-DD" u otra ISO
 }
 
 export interface Cuenta {

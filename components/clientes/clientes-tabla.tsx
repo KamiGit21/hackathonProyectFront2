@@ -30,19 +30,26 @@ export function ClientesTabla({
 }: ClientesTablaProps) {
   const [filtroNombre, setFiltroNombre] = useState('');
   const [filtroCi, setFiltroCi] = useState('');
-  const [filtroEstado, setFiltroEstado] = useState<'Todos' | 'Activo' | 'Inactivo'>('Todos');
+  const [filtroEstado, setFiltroEstado] = useState<'Todos' | 'ACTIVO' | 'INACTIVO'>('Todos');
 
   const clientesFiltrados = useMemo(() => {
-    return clientes.filter(cliente => {
-      const matchNombre = `${cliente.nombre} ${cliente.apellidos}`
+    return clientes.filter((cliente) => {
+      const matchNombre = `${cliente.nombre} ${cliente.apellidos ?? ''}`
         .toLowerCase()
         .includes(filtroNombre.toLowerCase());
-      const matchCI = cliente.ci.includes(filtroCi);
+
+      const ciText = cliente.ci_nit ?? '';
+      const matchCI = ciText.includes(filtroCi);
+
       const matchEstado =
         filtroEstado === 'Todos' || cliente.estado === filtroEstado;
+
       return matchNombre && matchCI && matchEstado;
     });
   }, [clientes, filtroNombre, filtroCi, filtroEstado]);
+
+  const getEstadoLabel = (estado: Cliente['estado']) =>
+    estado === 'ACTIVO' ? 'Activo' : 'Inactivo';
 
   return (
     <div className="space-y-4">
@@ -71,9 +78,9 @@ export function ClientesTabla({
             onChange={(e) => setFiltroEstado(e.target.value as any)}
             className="w-full px-3 py-2 border border-input rounded-md text-sm bg-background"
           >
-            <option>Todos</option>
-            <option>Activo</option>
-            <option>Inactivo</option>
+            <option value="Todos">Todos</option>
+            <option value="ACTIVO">Activo</option>
+            <option value="INACTIVO">Inactivo</option>
           </select>
         </div>
       </div>
@@ -97,23 +104,23 @@ export function ClientesTabla({
             {clientesFiltrados.map((cliente, idx) => (
               <TableRow key={cliente.id} className="hover:bg-muted/30">
                 <TableCell className="font-medium">{idx + 1}</TableCell>
-                <TableCell>{`${cliente.nombre} ${cliente.apellidos}`}</TableCell>
-                <TableCell>{cliente.ci}</TableCell>
+                <TableCell>{`${cliente.nombre} ${cliente.apellidos ?? ''}`}</TableCell>
+                <TableCell>{cliente.ci_nit}</TableCell>
                 <TableCell className="text-sm">{cliente.email}</TableCell>
                 <TableCell>{cliente.telefono}</TableCell>
                 <TableCell>
                   <Badge
-                    variant={cliente.estado === 'Activo' ? 'default' : 'secondary'}
+                    variant={cliente.estado === 'ACTIVO' ? 'default' : 'secondary'}
                     className={
-                      cliente.estado === 'Activo'
+                      cliente.estado === 'ACTIVO'
                         ? 'bg-green-100 text-green-800'
                         : 'bg-gray-100 text-gray-800'
                     }
                   >
-                    {cliente.estado}
+                    {getEstadoLabel(cliente.estado)}
                   </Badge>
                 </TableCell>
-                <TableCell className="text-sm">{cliente.fechaAlta}</TableCell>
+                <TableCell className="text-sm">{cliente.fecha_alta}</TableCell>
                 <TableCell>
                   <div className="flex gap-2">
                     <Button

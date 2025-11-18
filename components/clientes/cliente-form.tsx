@@ -13,38 +13,58 @@ interface ClienteFormProps {
   isOpen: boolean;
 }
 
+type ClienteFormState = {
+  nombre: string;
+  apellidos: string;
+  ci_nit: string;
+  email: string;
+  telefono: string;
+  fecha_nacimiento: string;
+  direccion: string;
+  estado: 'ACTIVO' | 'INACTIVO';
+};
+
 export function ClienteForm({
   cliente,
   onSave,
   onClose,
   isOpen,
 }: ClienteFormProps) {
-  const [form, setForm] = useState<any>({
+  const [form, setForm] = useState<ClienteFormState>({
     nombre: '',
     apellidos: '',
-    ci: '',
+    ci_nit: '',
     email: '',
     telefono: '',
-    fechaNacimiento: '',
+    fecha_nacimiento: '',
     direccion: '',
-    estado: 'Activo',
+    estado: 'ACTIVO',
   });
 
   const [errores, setErrores] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (cliente) {
-      setForm(cliente);
+      setForm({
+        nombre: cliente.nombre ?? '',
+        apellidos: cliente.apellidos ?? '',
+        ci_nit: cliente.ci_nit ?? '',
+        email: cliente.email ?? '',
+        telefono: cliente.telefono ?? '',
+        fecha_nacimiento: cliente.fecha_nacimiento ?? '',
+        direccion: cliente.direccion ?? '',
+        estado: cliente.estado ?? 'ACTIVO',
+      });
     } else {
       setForm({
         nombre: '',
         apellidos: '',
-        ci: '',
+        ci_nit: '',
         email: '',
         telefono: '',
-        fechaNacimiento: '',
+        fecha_nacimiento: '',
         direccion: '',
-        estado: 'Activo',
+        estado: 'ACTIVO',
       });
     }
     setErrores({});
@@ -55,7 +75,7 @@ export function ClienteForm({
 
     if (!form.nombre.trim()) nuevosErrores.nombre = 'El nombre es requerido';
     if (!form.apellidos.trim()) nuevosErrores.apellidos = 'Los apellidos son requeridos';
-    if (!form.ci.trim()) nuevosErrores.ci = 'El CI/NIT es requerido';
+    if (!form.ci_nit.trim()) nuevosErrores.ci_nit = 'El CI/NIT es requerido';
     if (!form.email.trim()) nuevosErrores.email = 'El email es requerido';
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
       nuevosErrores.email = 'Email inválido';
@@ -69,7 +89,8 @@ export function ClienteForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validar()) {
-      onSave(form);
+      // onSave recibirá el objeto directamente compatible con el backend
+      onSave(form as any);
       onClose();
     }
   };
@@ -114,13 +135,13 @@ export function ClienteForm({
             <div>
               <label className="text-sm font-medium mb-1 block">CI/NIT</label>
               <Input
-                value={form.ci}
-                onChange={(e) => setForm({ ...form, ci: e.target.value })}
+                value={form.ci_nit}
+                onChange={(e) => setForm({ ...form, ci_nit: e.target.value })}
                 placeholder="12345678"
-                className={errores.ci ? 'border-destructive' : ''}
+                className={errores.ci_nit ? 'border-destructive' : ''}
               />
-              {errores.ci && (
-                <p className="text-xs text-destructive mt-1">{errores.ci}</p>
+              {errores.ci_nit && (
+                <p className="text-xs text-destructive mt-1">{errores.ci_nit}</p>
               )}
             </div>
 
@@ -130,9 +151,9 @@ export function ClienteForm({
               </label>
               <Input
                 type="date"
-                value={form.fechaNacimiento}
+                value={form.fecha_nacimiento}
                 onChange={(e) =>
-                  setForm({ ...form, fechaNacimiento: e.target.value })
+                  setForm({ ...form, fecha_nacimiento: e.target.value })
                 }
               />
             </div>
@@ -181,11 +202,13 @@ export function ClienteForm({
               <label className="text-sm font-medium mb-1 block">Estado</label>
               <select
                 value={form.estado}
-                onChange={(e) => setForm({ ...form, estado: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, estado: e.target.value as 'ACTIVO' | 'INACTIVO' })
+                }
                 className="w-full px-3 py-2 border border-input rounded-md text-sm bg-background"
               >
-                <option>Activo</option>
-                <option>Inactivo</option>
+                <option value="ACTIVO">Activo</option>
+                <option value="INACTIVO">Inactivo</option>
               </select>
             </div>
           </div>

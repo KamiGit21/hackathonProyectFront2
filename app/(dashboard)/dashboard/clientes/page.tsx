@@ -9,11 +9,12 @@ import { ClientesTabla } from '@/components/clientes/clientes-tabla';
 import { ClienteForm } from '@/components/clientes/cliente-form';
 import { ClienteDetalle } from '@/components/clientes/cliente-detalle';
 import {
-  listarClientes,
-  crearCliente,
-  actualizarCliente,
-  eliminarCliente,
-} from '@/lib/api';
+  fetchClientes as listarClientes,
+  createCliente as crearCliente,
+  updateCliente as actualizarCliente,
+  deleteCliente as eliminarCliente,
+} from '@/lib/api/clientes';
+
 import { Cliente } from '@/lib/types';
 import { Plus, AlertCircle } from 'lucide-react';
 
