@@ -13,9 +13,11 @@ import {
   transferenciasSeed,
   prestamosSeed,
 } from './mock-data';
-
+import axios from 'axios';
 // Simulamos un pequeño delay para parecer realista
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+const BASE_URL_PAGOS = 'https://solid-tribble-7j6464x4wxrcwjp-8003.app.github.dev';
 
 // CLIENTES
 let clientes: Cliente[] = [...clientesSeed];
@@ -112,27 +114,30 @@ export async function retirar(cuentaId: string, monto: number): Promise<boolean>
 // PAGOS DE SERVICIOS
 let pagos: PagoServicio[] = [...pagosSeed];
 
-export async function listarPagos(): Promise<PagoServicio[]> {
-  await delay(300);
-  return pagos;
+export async function listarPagos(cuentaId?: string): Promise<PagoServicio[]> {
+  const url = `${BASE_URL_PAGOS}/api/pagos${cuentaId ? `?cuenta_id=${cuentaId}` : ''}`;
+  const res = await axios.get(url);
+  return res.data;
 }
 
-export async function realizarPagoServicio(
-  pago: Omit<PagoServicio, 'id'>
-): Promise<PagoServicio> {
-  await delay(600); // Simula delay de procesamiento
-  const nuevoPago: PagoServicio = {
-    ...pago,
-    id: Date.now().toString(),
-    estado: Math.random() > 0.1 ? 'Exitoso' : 'Fallido',
+export async function realizarPagoServicio(pago: {
+  cuentaId: string;
+  tipoServicio: string;
+  codigoSuministro?: string;
+  monto: number;
+  descripcion?: string;
+  estado?: string;
+  fecha?: string;
+  referencia?: string;
+}): Promise<PagoServicio> {
+  const payload = {
+    cuenta_id: pago.cuentaId,
+    tipo_servicio: pago.tipoServicio,
+    monto: pago.monto,
+    referencia: pago.referencia ?? 'string',
   };
-  pagos.push(nuevoPago);
-
-  // Actualizar saldo de la cuenta
-  if (nuevoPago.estado === 'Exitoso') {
-    await retirar(nuevoPago.cuentaId, nuevoPago.monto);
-  }
-  return nuevoPago;
+  const res = await axios.post(`${BASE_URL_PAGOS}/api/pagos`, payload);
+  return res.data;
 }
 
 // TRANSFERENCIAS
