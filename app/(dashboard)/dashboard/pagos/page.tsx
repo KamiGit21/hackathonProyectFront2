@@ -25,24 +25,42 @@ export default function PagosPage() {
   }, []);
 
   const cargarDatos = async () => {
-    try {
-      setLoading(true);
-      setError(null);
+  try {
+    setLoading(true);
+    setError(null);
+    const [cu, p] = await Promise.all([listarCuentas(), listarPagos()]);
 
-      const [cu, p] = await Promise.all([
-        listarCuentas(),
-        listarPagos(cuentas.length > 0 ? cuentas[0].id : undefined)
-      ]);
+    setCuentas(cu.filter(c => c.estado === 'Activa'));
 
-      setCuentas(cu.filter(c => c.estado === 'Activa'));
-      setPagos(p);
-    } catch (err) {
-      setError('Error al cargar los datos');
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    const pagosMapeados: PagoServicio[] = p.map(item => ({
+      id: item.id,
+      cuentaId: item.cuenta_id,
+      tipoServicio: (() => {
+        switch (item.tipo_servicio.toUpperCase()) {
+          case 'LUZ': return 'Luz';
+          case 'AGUA': return 'Agua';
+          case 'TELÉFONO': return 'Teléfono';
+          case 'GAS': return 'Gas';
+          case 'INTERNET': return 'Internet';
+          default: return 'Otro';
+        }
+      })(),
+      codigoSuministro: item.referencia,
+      monto: item.monto,
+      estado: item.estado === 'EXITOSO' ? 'Exitoso' : item.estado === 'FALLIDO' ? 'Fallido' : 'Pendiente',
+      fecha: new Date(item.fecha * 1000).toLocaleString(), // convierte timestamp a readable
+      descripcion: item.mensaje_respuesta,
+    }));
+
+    setPagos(pagosMapeados);
+  } catch (err) {
+    setError('Error al cargar los datos');
+    console.error(err);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const handlePagar = async (
     cuentaId: string,

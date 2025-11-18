@@ -14,7 +14,6 @@ import {
   prestamosSeed,
 } from './mock-data';
 import axios from 'axios';
-import { PagoServicio } from './types';
 // Simulamos un pequeño delay para parecer realista
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
